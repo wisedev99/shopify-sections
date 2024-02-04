@@ -1,0 +1,20 @@
+.collage {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 3rem; /* Adjust the value to your desired gap size */
+  justify-content: center;
+  max-width: 84rem; /* Assuming 1rem = 16px, 4xl = 64rem */
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2.5rem; /* Assuming 1rem = 10px, my-10 = 2.5rem */
+  margin-bottom: 2.5rem; /* Assuming 1rem = 10px, my-10 = 2.5rem */
+}
+collage__item .collage__item:nth-child(1),
+.collage__item:nth-child(2) {
+  grid-column: span 1;
+}
+
+.collage__item:nth-child(3) {
+  grid-column: span 2;
+  width: 100%;
+}

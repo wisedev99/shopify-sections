@@ -1,0 +1,46 @@
+<style>
+ body {
+    font-family: Helvetica, sans-serif, regular;
+    font-size: 16px;
+ }
+</style>
+
+{% assign all_products = collections.all.products %}
+
+<div class="mx-auto max-w-4xl my-10 text-center">
+  <div class="space-y-4">
+    <!-- <h1 class="font-bold">{{ section.settings.heading }}</h1> -->
+  </div>
+    <div>
+        <div class="mx-auto max-w-4xl text-center my-24">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 gap-y-20">
+              {% for product in all_products %}
+                   {% if product %}
+          
+                <a href="products/{{ product.title  }}">
+                  <div>
+                        {{ product | image_url: width: 400 | image_tag }} 
+                         <h4 class="font-bold text-md">{{ product.title }}</h4>
+                                <p>{{ product.price }}</p>   
+                    </div>
+                </a>
+              {% endif %}
+              {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% schema %}
+{
+  "name": "Product Grid",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Page Title",
+      "default": "All Products"
+    }   
+  ]
+}
+{% endschema %}

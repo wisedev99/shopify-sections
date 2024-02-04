@@ -1,0 +1,105 @@
+<script defer src="https://cdn.tailwindcss.com"></script>
+<style>
+ body {
+    font-family: Helvetica, sans-serif, regular;
+    font-size: 16px;
+ }
+</style>
+<div class="mx-auto max-w-4xl my-10 text-center">
+  <div class="space-y-4">
+    <h4 class="font-bold">{{ section.settings.heading }}</h4>
+    <h1 class="text-4xl uppercase">{{ section.settings.heading1 }}</h1>
+    <p>{{ section.settings.description }}</p>
+  </div>
+    <div>
+        <div class="mx-auto max-w-4xl text-center my-24">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 gap-y-20">
+                {% for block in section.blocks %}
+                {% assign product = block.settings.selected_product %}
+             {% if product %}
+          
+                <a href="products/{{ product.title  }}">
+                  <div>
+                        {{ product | image_url: width: 400 | image_tag }} 
+                         <h4 class="font-bold text-md">{{ product.title }}</h4>
+                             {% if section.settings.show_price %}
+                                <p>{{ product.price }}</p>
+                             {% endif %}
+                    </div>
+                </a>
+    {% endif %}
+  {% endfor %}
+            </div>
+        </div>
+    </div>
+  
+  <!-- {% for block in section.blocks %}
+    {% assign product = block.settings.selected_product %}
+    <pre>
+      {% for variant in product.variants %}
+        <p>Variant Title: {{ variant.title }}</p>
+        <p>Model Number: {{ variant.metafields.global.model_number }}</p>
+      {% endfor %}
+    </pre>
+    {% if product %}
+          
+      {{ product | image_url: width: 200 | image_tag }}    
+       <h2>{{ product.title }}</h2>
+      {% if section.settings.show_price %}
+        <p>Price: {{ product.price }}</p>
+      {% endif %}
+      
+    {% endif %}
+  {% endfor %} -->
+</div>
+
+{% schema %}
+{
+  "name": "Product Grid",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Page Title",
+      "default": "Experience a Rolex"
+    },
+    {
+      "type": "text",
+      "id": "heading1",
+      "label": "Heading",
+      "default": "ROLEX WATCHES"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Rolex watches are crafted from the finest raw materials and assembled with scrupulous atttention to details. Every component is designed, developed and produced to the most exacting standarts."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "label": "Show Price",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show Description",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "products",
+      "name": "Selected Products",
+      "settings": [
+        {
+          "type": "product",
+          "id": "selected_product",
+          "label": "Select Product"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,96 @@
+{% assign product_id = request.path | split: '/' | last %}
+
+{% assign product = all_products[product_id] %}
+
+<style>
+    .model-number:hover {
+        cursor: pointer;
+        /* background-color: gray;
+        text-decoration: none;
+        padding: 4px;
+        color: white; */
+    }
+  #model-input {
+    display:none;
+    border: 1px solid;
+    background: lightyellow;
+    padding-right:3px;
+    padding-left:3px
+  }
+</style>
+
+<!-- Display product information here -->
+
+<div>
+    <div class="flex flex-col flex-col-reverse items-center max-w-4xl md:flex-row mx-auto">
+        <div class="w-1/2 p-4">
+            <div>{{ product.description }}</div>
+            {% for variant in product.variants %}
+                <div class="flex space-x-2">
+                    <span class="font-bold">Model Number:</span>
+                   <div class="model-number">
+                      <span class="model-span">{{ variant.option1 }}</span>
+                     <input type="text" id="model-input" name="model-input" required value="{{ variant.option1 }}"  size="10" />
+                   </div>
+                </div>
+                <p><span class="font-bold">Model Case:</span> {{ variant.option2 }}</p>
+                <p><span class="font-bold">Movement:</span>70m</p>
+            {% endfor %}
+        </div>
+        <div class="w-1/2 p-4 text-center">
+            {{ product | image_url: width: 400 | image_tag }}
+        </div>
+    </div>
+</div>
+
+<script>
+      const productData = {{ product | json }};
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const modelNumber = document.querySelector('.model-number');
+      
+      const spanElement = modelNumber.querySelector('.model-span');
+        const inputElement = modelNumber.querySelector('input');
+
+        modelNumber.addEventListener('mouseover', function() {
+            spanElement.style.display = 'none';
+            inputElement.style.display = 'inline-block';
+        });
+
+        modelNumber.addEventListener('mouseout', function() {
+            productData.variants[0].option1 = inputElement.value;
+          save(inputElement.value)
+            spanElement.textContent = inputElement.value;
+            spanElement.style.display = 'inline-block';
+            inputElement.style = 'none'
+          console.log( productData.variants)
+          
+        });
+    });
+
+  function save(newValue) {
+  const variantId = productData.variants[0].id
+ const updateData = {
+    variant: {
+        id: variantId,
+        option1: newValue
+    }
+};
+
+fetch(`https://c8ada5-5.myshopify.com/admin/api/2021-09/products/${productData.id}/variants/${variantId}.json`, {
+    method: 'PUT',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Access-Token': 'd6dd44a8642601dbbac3de26523d7a4a:9a213db317fd20dab3946f06f6b9dcd3'
+    },
+    body: JSON.stringify(updateData)
+})
+.then(response => response.json())
+.then(data => {
+    console.log('Variant updated successfully:', data.variant);
+})
+.catch(error => {
+    console.error('Error updating variant:', error);
+});
+  }
+</script>
